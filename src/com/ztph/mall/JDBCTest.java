@@ -2,6 +2,7 @@ package com.ztph.mall;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,7 +10,44 @@ import java.sql.Statement;
 public class JDBCTest {
 
 	public static void main(String[] args) {
-		temPlate();
+//		temPlate();
+		readData("'or 1 or'");
+	}
+
+	private static void readData(String name) {
+		Connection conn = null;
+		//PreparedStatement 预处理sql,可以防止依赖注入
+//		PreparedStatement preStmt = null;
+		Statement preStmt = null;
+		ResultSet rSet = null;
+		try {
+			conn = JDBCUtil.getInstance().getConnection();
+			
+			/**
+			 * 演示非预处理方式
+			 */
+			String sql = "select * from teacher where name="+name+";";
+			System.out.println("sql = "+sql);
+			preStmt = conn.createStatement();
+			rSet = preStmt.executeQuery(sql);
+			
+			/**
+			 * 演示预处理语句方式
+			 */
+//			String sql = "select id,name,age,sex,marrital_status,master from teacher where name = ?";
+//			preStmt = conn.prepareStatement(sql);
+//			preStmt.setString(1,name);
+//			rSet = preStmt.executeQuery();
+
+			while (rSet.next()) {
+				System.out.println("id = "+rSet.getString("id")+"  name = "+rSet.getString("name")+"  age = "+rSet.getInt("age")+"  sex = "+rSet.getString("sex"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	
 	}
 
 	static void temPlate() {
