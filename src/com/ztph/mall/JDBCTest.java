@@ -11,40 +11,43 @@ public class JDBCTest {
 
 	public static void main(String[] args) {
 //		temPlate();
-		readData("'or 1 or'");
+//		readData("'or 1 or'");
+		readData("å¾é’æ¾");//å‚æ•°ä¸º 'or 1 or'å«æœ‰sqlå…³é”®å­—oræˆ–andæ—¶å­˜åœ¨ä¾èµ–æ³¨å…¥é—®é¢˜
 	}
 
 	private static void readData(String name) {
 		Connection conn = null;
-		//PreparedStatement Ô¤´¦Àísql,¿ÉÒÔ·ÀÖ¹ÒÀÀµ×¢Èë
+		//PreparedStatement sqlé¢„å¤„ç†è¯­å¥
 //		PreparedStatement preStmt = null;
 		Statement preStmt = null;
-		ResultSet rSet = null;
+		ResultSet rs = null;
 		try {
 			conn = JDBCUtil.getInstance().getConnection();
 			
 			/**
-			 * ÑİÊ¾·ÇÔ¤´¦Àí·½Ê½
+			 * éé¢„å¤„ç†è¯­å¥æµ‹è¯•
 			 */
 			String sql = "select * from teacher where name='"+name+"';";
 			System.out.println("sql = "+sql);
 			preStmt = conn.createStatement();
-			rSet = preStmt.executeQuery(sql);
+			rs = preStmt.executeQuery(sql);
 			
 			/**
-			 * ÑİÊ¾Ô¤´¦ÀíÓï¾ä·½Ê½
+			 * é¢„å¤„ç†è¯­å¥æµ‹è¯•
 			 */
 //			String sql = "select id,name,age,sex,marrital_status,master from teacher where name = ?";
 //			preStmt = conn.prepareStatement(sql);
 //			preStmt.setString(1,name);
 //			rSet = preStmt.executeQuery();
 
-			while (rSet.next()) {
-				System.out.println("id = "+rSet.getString("id")+"  name = "+rSet.getString("name")+"  age = "+rSet.getInt("age")+"  sex = "+rSet.getString("sex"));
+			while (rs.next()) {
+				System.out.println("id = "+rs.getString("id")+"  name = "+rs.getString("name")+"  age = "+rs.getInt("age")+"  sex = "+rs.getString("sex"));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JDBCUtil.free(rs, preStmt, conn);
 		}
 		
 	
@@ -75,7 +78,7 @@ public class JDBCTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			// 6¡¢ÊÍ·Å×ÊÔ´:ÎªÊ²Ã´Òª¹Ø±Õ×ÊÔ´£¬ÒòÎªµ×²ãÊÇÍ¨¹ısocket½øĞĞÁ¬½ÓµÄ£¬²»¹Ø±ÕÊÍ·ÅµÄ»°£¬»áÏûºÄºÜ¶à×ÊÔ´
+			// 6ã€é‡Šæ”¾èµ„æº
 			try {
 				if (rs != null)
 					rs.close();
@@ -104,25 +107,25 @@ public class JDBCTest {
 
 	static void test() {
 		try {
-			// 1¡¢×¢²áÇı¶¯
+			// 1ã€æ³¨å†Œé©±åŠ¨
 			// DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 			// System.setProperty("jdbc.drivers", "com.mysql.jdbc.Driver");
 			Class.forName("com.mysql.jdbc.Driver");
-			// 2¡¢½¨Á¢Á¬½Ó,Á¬½ÓÊ±£¬Êı¾İ¿âÃû³ÆÓ¦¸ÃÎªschame¶ÔÓ¦Ãû³Æ£¬Í¬Ê±ĞèÒª¼ÓÉÏÔÊĞí²ÉÓÃssl·½Ê½£¬¼´useSSL=true;
+			// 2ã€è·å–æ•°æ®åº“è¿æ¥ï¼Œè¿æ¥æ—¶æœ‰æ—¶ä¼šæŠ¥é”™sslè®¤è¯å¤±è´¥ï¼Œéœ€è¦åŠ å‚æ•°useSSL=true
 			Connection conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/ztph?useSSL=true", "root",
 					"Linghua457");
-			// 3¡¢´´½¨Óï¾ä
+			// 3ã€å»ºç«‹è¯­å¥
 			Statement stmt = conn.createStatement();
-			// 4¡¢Ö´ĞĞÓï¾ä
+			// 4ã€æ‰§è¡Œsqlè¯­å¥
 			ResultSet rs = stmt.executeQuery("select * from teacher;");
-			// 5¡¢±éÀú²éÑ¯
+			// 5ã€å¤„ç†sqlè¯­å¥ç»“æœ
 			while (rs.next()) {
 				System.out.print(rs.getObject(1) + ":" + rs.getObject(2) + ":"
 						+ rs.getObject(3) + ":" + rs.getObject(4) + ":"
 						+ rs.getObject(5) + ":" + rs.getObject(6));
 			}
-			// 6¡¢ÊÍ·Å×ÊÔ´
+			// 6ã€é‡Šæ”¾èµ„æº
 			rs.close();
 			stmt.close();
 			conn.close();

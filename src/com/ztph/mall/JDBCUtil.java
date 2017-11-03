@@ -2,7 +2,9 @@ package com.ztph.mall;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class JDBCUtil {
 	private static final String URL_STRING = "jdbc:mysql://localhost:3306/ztph?useSSL=true";
@@ -37,5 +39,32 @@ public class JDBCUtil {
 			e.printStackTrace();
 		}
 		return conn;
+	}
+	
+	public static void free(ResultSet rs,Statement stmt,Connection conn){
+		// 6、释放资源:为什么要关闭资源，因为底层是通过socket进行连接的，不关闭释放的话，会消耗很多资源
+		try {
+			if (rs != null)
+				rs.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (conn != null) {
+						conn.close();
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
