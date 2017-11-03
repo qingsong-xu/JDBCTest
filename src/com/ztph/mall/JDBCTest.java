@@ -26,7 +26,7 @@ public class JDBCTest {
 			/**
 			 * 演示非预处理方式
 			 */
-			String sql = "select * from teacher where name="+name+";";
+			String sql = "select * from teacher where name='"+name+"';";
 			System.out.println("sql = "+sql);
 			preStmt = conn.createStatement();
 			rSet = preStmt.executeQuery(sql);
