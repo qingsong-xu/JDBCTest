@@ -6,14 +6,39 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 
 public class JDBCTest {
 
 	public static void main(String[] args) {
 //		temPlate();
 //		readData("'or 1 or'");
-		readData("徐青松");//参数为 'or 1 or'含有sql关键字or或and时存在依赖注入问题
+//		readData("徐青松");//参数为 'or 1 or'含有sql关键字or或and时存在依赖注入问题
+		insertDate("向日葵","女","已婚",25,"音乐");
 	}
+	
+	private static void insertDate(String name,String sex,String marrital_status,int age,String master){
+		Connection conn = null;
+		PreparedStatement preStmt = null;
+		
+		try {
+			conn = JDBCUtil.getInstance().getConnection();
+			String sql = "insert into teacher(name,sex,marrital_status,age,master) values(?,?,?,?,?)";
+			preStmt = conn.prepareStatement(sql);
+			preStmt.setString(1, name);
+			preStmt.setString(2, sex);
+			preStmt.setString(3, marrital_status);
+			preStmt.setInt(4, age);
+			preStmt.setString(5, master);
+			preStmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			JDBCUtil.free(null, preStmt, conn);
+		}
+  	}
 
 	private static void readData(String name) {
 		Connection conn = null;
